@@ -61,9 +61,9 @@ class Background:
         for r in range(1, self.rows):
             for c in range(1, self.cols):
                 if self.grass_map[r][c] == 1:
-                    self.screen.blit(self.grass1, (c*self.tile_size, r*self.tile_size))
+                    self.screen.blit(self.grass1, (c * self.tile_size, r * self.tile_size))
                 elif self.grass_map[r][c] == 2:
-                    self.screen.blit(self.grass2, (c*self.tile_size, r*self.tile_size))
+                    self.screen.blit(self.grass2, (c * self.tile_size, r * self.tile_size))
         
         # punch holes
         for x, y in self.holes_positions:  

@@ -10,6 +10,8 @@ except ImportError:
 
 import sys
 import random
+from typing import List
+import math
 
 pg.init()
 SCREEN_WIDTH, SCREEN_HEIGHT = 1024, 768
@@ -30,9 +32,27 @@ def gen_pos(cols, rows):
         for c in range(cols):
             x = c * HOLE_SIZE + (c + 1) * padding_col
             grid[r][c] = (int(x), int(y))
-
     return grid
-    
+
+def collide(mouse_pos, spawn_pos: List) -> bool:
+    radius = 64
+    rows = len(spawn_pos)
+    cols = len(spawn_pos[0])
+    x_mouse, y_mouse = mouse_pos
+    print(f"Spawn: {len(spawn_pos)}")
+    for x_spawn, y_spawn in spawn_pos:
+            x_center = x_spawn + HOLE_SIZE / 2
+            y_center = y_spawn + HOLE_SIZE / 2
+
+            distance = math.sqrt(
+                math.pow(x_mouse - x_center, 2) + \
+                math.pow(y_mouse - y_center, 2)
+            )
+            if distance <= radius:
+                print("Click: HIT")
+                return True
+    return False
+
 def main():
     # Initialize
     clock = pg.time.Clock()
@@ -58,15 +78,24 @@ def main():
 
     # Play background music
     music.play_background_music()
-    
+
+    # Flags
     running = True
+    
     while running:
+        hit = False
         for e in pg.event.get():
             if e.type == pg.QUIT:
                 running = False
+            if e.type == pg.MOUSEBUTTONDOWN and e.button == 1:
+                if collide(e.pos, holes_positions):
+                    music.play_sound("hit")
+                    hit = True
 
-        # vẽ mỗi frame
-        
+        if not hit:
+            # music.play_sound("miss")
+            print("Click: MISS")
+
         bg.draw()
         pg.display.flip()
         clock.tick(60)

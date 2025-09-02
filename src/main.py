@@ -3,6 +3,7 @@ import random
 import sys
 import time
 import os
+from SoundManager import SoundManager
 
 pygame.init()
 
@@ -270,6 +271,9 @@ def main():
     background = Background()
     background.bg()
 
+# Initialize SoundManager and play background music
+    sound_manager = SoundManager()
+    sound_manager.play_background_music()
     pygame.display.flip()
 
     while running:

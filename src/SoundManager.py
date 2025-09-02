@@ -26,9 +26,12 @@ class SoundManager:
         else:
             print(f"Warning: Sound file '{hit_sfx_path}' not found")
         
+        """
         for sound in self.sounds.values():
             sound.set_volume(self.sfx_volume)
-
+        """
+        self.sounds["hit"].set_volume(self.sfx_volume)
+            
     def play_background_music(self, filename = str(ASSETS / "Music" / "BackGroundMusic.wav"), loop=True):
         if os.path.exists(filename):
             try:

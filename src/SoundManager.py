@@ -11,7 +11,8 @@ class SoundManager:
             "miss": None
         }
         self.music_volume = 0.5
-        self.sfx_volume = 0.7
+        self.sfx_hit_volume = 0.7
+        self.sfx_miss_volume = 0.5
         self._load_sounds()
     
     def _load_sounds(self):
@@ -19,19 +20,26 @@ class SoundManager:
         hit_sfx_path = str(ASSETS / "Sfx" / "Hit.wav")
 
         # Miss sound effect
-
+        miss_sfx_path = str(ASSETS / "Sfx" / "Miss.wav")
 
         if os.path.exists(hit_sfx_path):
             self.sounds["hit"] = pygame.mixer.Sound(hit_sfx_path)
         else:
             print(f"Warning: Sound file '{hit_sfx_path}' not found")
-        
+
+        if os.path.exists(miss_sfx_path):
+            self.sounds["miss"] = pygame.mixer.Sound(miss_sfx_path)
+        else:
+            print(f"Warning: Sound file '{miss_sfx_path}' not found")
+            
         """
         for sound in self.sounds.values():
             sound.set_volume(self.sfx_volume)
         """
-        self.sounds["hit"].set_volume(self.sfx_volume)
-            
+        
+        self.sounds["hit"].set_volume(self.sfx_hit_volume)
+        self.sounds["miss"].set_volume(self.sfx_miss_volume)
+
     def play_background_music(self, filename = str(ASSETS / "Music" / "BackGroundMusic.wav"), loop=True):
         if os.path.exists(filename):
             try:

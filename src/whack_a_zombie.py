@@ -3,8 +3,10 @@ import pygame as pg
 from pathlib import Path
 try:
     from .background import Background
+    from .soundmanager import SoundManager
 except ImportError:
     from background import Background
+    from soundmanager import SoundManager
 
 import sys
 import random
@@ -32,6 +34,7 @@ def gen_pos(cols, rows):
     return grid
     
 def main():
+    # Initialize
     clock = pg.time.Clock()
     """
     3 levels of hole: 6 -> 9 -> 12
@@ -41,19 +44,21 @@ def main():
         case (6 | 9) as n:
             cols = 3
             rows = n // 3
-            print(f"{cols} {rows}")
             holes_grid = gen_pos(cols, rows)  
         case 12 as n:
             cols = 4
             rows = n // 4
-            print(f"{cols} {rows}") 
             holes_grid = gen_pos(cols, rows)  
         case _:
             raise ValueError(f"Unexpected: {num_spawns}")
 
     holes_positions = [pos for row in holes_grid for pos in row]
     bg = Background(SCREEN, TILE_SIZE, holes_positions)
+    music = SoundManager()
 
+    # Play background music
+    music.play_background_music()
+    
     running = True
     while running:
         for e in pg.event.get():
@@ -61,6 +66,7 @@ def main():
                 running = False
 
         # vẽ mỗi frame
+        
         bg.draw()
         pg.display.flip()
         clock.tick(60)

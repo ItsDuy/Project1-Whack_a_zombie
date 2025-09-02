@@ -1,16 +1,26 @@
+from pathlib import Path
 import os
 import pygame
 
+ASSETS = Path(__file__).resolve().parent.parent / "assets" / "Sounds" 
 class SoundManager:
     def __init__(self):
         pygame.mixer.init()
-        self.sounds = {}
+        self.sounds = {
+            "hit": None,
+            "miss": None
+        }
         self.music_volume = 0.5
         self.sfx_volume = 0.7
         self._load_sounds()
     
     def _load_sounds(self):
-        hit_sfx_path="../assets/Sounds/Sfx/hit.wav"
+        # Hit sound effect
+        hit_sfx_path = str(ASSETS / "Sfx" / "Hit.wav")
+
+        # Miss sound effect
+
+
         if os.path.exists(hit_sfx_path):
             self.sounds["hit"] = pygame.mixer.Sound(hit_sfx_path)
         else:
@@ -18,8 +28,8 @@ class SoundManager:
         
         for sound in self.sounds.values():
             sound.set_volume(self.sfx_volume)
-    
-    def play_background_music(self, filename="../assets/Sounds/Music/BackGroundMusic.wav", loop=True):
+
+    def play_background_music(self, filename = str(ASSETS / "Music" / "BackGroundMusic.wav"), loop=True):
         if os.path.exists(filename):
             try:
                 pygame.mixer.music.load(filename)
@@ -39,4 +49,4 @@ class SoundManager:
             return True
         else:
             print(f"Warning: Sound '{sound_name}' not found")
-            return False
+            return False    

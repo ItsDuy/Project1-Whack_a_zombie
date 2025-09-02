@@ -3,10 +3,10 @@ import pygame as pg
 from pathlib import Path
 try:
     from .background import Background
-    from .soundmanager import SoundManager
+    from .SoundManager import SoundManager
 except ImportError:
     from background import Background
-    from soundmanager import SoundManager
+    from SoundManager import SoundManager
 
 import sys
 import random
@@ -35,11 +35,8 @@ def gen_pos(cols, rows):
     return grid
 
 def collide(mouse_pos, spawn_pos: List) -> bool:
-    radius = 64
-    rows = len(spawn_pos)
-    cols = len(spawn_pos[0])
+    radius = TILE_SIZE
     x_mouse, y_mouse = mouse_pos
-    print(f"Spawn: {len(spawn_pos)}")
     for x_spawn, y_spawn in spawn_pos:
             x_center = x_spawn + HOLE_SIZE / 2
             y_center = y_spawn + HOLE_SIZE / 2
@@ -49,7 +46,6 @@ def collide(mouse_pos, spawn_pos: List) -> bool:
                 math.pow(y_mouse - y_center, 2)
             )
             if distance <= radius:
-                print("Click: HIT")
                 return True
     return False
 
@@ -83,18 +79,16 @@ def main():
     running = True
     
     while running:
-        hit = False
         for e in pg.event.get():
             if e.type == pg.QUIT:
                 running = False
             if e.type == pg.MOUSEBUTTONDOWN and e.button == 1:
                 if collide(e.pos, holes_positions):
                     music.play_sound("hit")
-                    hit = True
-
-        if not hit:
-            # music.play_sound("miss")
-            print("Click: MISS")
+                    print("Click: HIT")
+                else:
+                    music.play_sound("miss")
+                    print("Click: MISS")
 
         bg.draw()
         pg.display.flip()

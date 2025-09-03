@@ -13,6 +13,7 @@ import random
 from typing import List
 import math
 
+# Initialize
 pg.init()
 SCREEN_WIDTH, SCREEN_HEIGHT = 1024, 768
 TILE_SIZE = 64
@@ -21,7 +22,7 @@ SCREEN = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 SPAWN_POS = None
 pg.display.set_caption("Whack a Zombies")
 
-def gen_pos(cols, rows):
+def gen_pos(cols, rows) -> List[List]:
     w, h = SCREEN.get_size()       
     padding_col = (w - HOLE_SIZE * cols) / (cols + 1)
     padding_row = (h - HOLE_SIZE * rows) / (rows + 1)

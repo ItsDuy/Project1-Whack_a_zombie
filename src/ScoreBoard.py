@@ -1,8 +1,9 @@
 import pygame as pg
 from typing import Tuple
+import os
 
 class ScoreBoard:
-    def __init__(self, screen: pg.Surface, font_size: int = 32, 
+    def __init__(self, screen: pg.Surface, font_size: int = 28, 
                  time_limit: int = 15, font_name: str = None):
         self.screen = screen
         self.score = 0
@@ -14,8 +15,12 @@ class ScoreBoard:
         
         # Font setup
         self.font_name = font_name
-        self.font = pg.font.SysFont(self.font_name, font_size)
-        
+        font_path = os.path.join('assets', 'Fonts', 'Minecraft.ttf')
+        try:
+            self.font = pg.font.Font(font_path, font_size)
+        except FileNotFoundError:
+            # Fallback to system font if file not found
+            self.font = pg.font.SysFont(self.font_name, font_size)
         # Colors
         self.text_color = (255, 255, 255)
         self.warning_color = (255, 0, 0)
@@ -54,7 +59,7 @@ class ScoreBoard:
         self.screen.blit(misses_text, self.misses_pos)
         
         # Draw timer (red when low on time)
-        color = self.warning_color if self.time_remaining < 10 else self.text_color
+        color = self.warning_color if self.time_remaining < 5 else self.text_color
         timer_text = self.font.render(f"Time: {self.time_remaining}", True, color)
         self.screen.blit(timer_text, self.timer_pos)
     

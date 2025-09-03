@@ -33,7 +33,7 @@ class ScoreBoard:
         self.time_remaining = self.time_limit - elapsed
         
         # Return False when time is up to end the game
-        return self.time_remaining >= 0
+        return self.time_remaining > 0
     
     def increase_score(self, points: int = 1):
         """Increase player's score"""

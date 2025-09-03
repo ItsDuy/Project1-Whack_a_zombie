@@ -17,5 +17,6 @@ class Cursor:
         self.image = pg.image.load(str(ASSETS / "hammer0.png")).convert_alpha()
 
     def draw(self):
+        pg.mouse.set_visible(False)
         self.rect.center = pg.mouse.get_pos()
         self.screen.blit(self.image, self.rect)

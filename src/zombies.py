@@ -8,5 +8,5 @@ ASSETS = Path(__file__).resolve().parent.parent / "assets" / "images" / "zombies
 class Zombies():
     def __init__(self, screen: pg.Surface, z_size: int):
         self.screen = screen
-        self.size = z_size
+        self.size = z_size      # Size of Zombies (128 x 128)
         

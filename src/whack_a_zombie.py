@@ -5,15 +5,18 @@ try:
     from .background import Background
     from .SoundManager import SoundManager
     from .ScoreBoard import ScoreBoard
+    from .cursor import Cursor
 except ImportError:
     from background import Background
     from SoundManager import SoundManager
     from ScoreBoard import ScoreBoard
+    from cursor import Cursor
 import sys
 import random
 from typing import List
 import math
 
+# Initialize
 pg.init()
 SCREEN_WIDTH, SCREEN_HEIGHT = 1024, 768
 TILE_SIZE = 64
@@ -23,10 +26,10 @@ SPAWN_POS = None
 pg.display.set_caption("Whack a Zombies")
 
 #GAME CONSANTS
-GAME_TIME=60
-SCORE_PER_HIT=1
+GAME_TIME = 20
+SCORE_PER_HIT = 1
 
-def gen_pos(cols, rows):
+def gen_pos(cols, rows) -> List[List]:
     w, h = SCREEN.get_size()       
     padding_col = (w - HOLE_SIZE * cols) / (cols + 1)
     padding_row = (h - HOLE_SIZE * rows) / (rows + 1)
@@ -74,39 +77,65 @@ def main():
             raise ValueError(f"Unexpected: {num_spawns}")
 
     holes_positions = [pos for row in holes_grid for pos in row]
+
+    # Background
     bg = Background(SCREEN, TILE_SIZE, holes_positions)
+
+    # Play Music
     music = SoundManager()
 
-    # Play background music
+    # Play Background Music
     music.play_background_music()
 
     # Scoreboard
-    scoreboard = ScoreBoard(SCREEN, time_limit=GAME_TIME)
+    scoreboard = ScoreBoard(SCREEN, time_limit = GAME_TIME)
+
+    # Cursor
+    cursor = Cursor(SCREEN)
+    pg.mouse.set_visible(False)
 
     # Flags
-    running = True
+    running = True  
+    playing = True    
 
     while running:
         for e in pg.event.get():
             if e.type == pg.QUIT:
+                """Quit"""
                 running = False
                 pg.quit()
                 sys.exit(0)
-            if e.type == pg.MOUSEBUTTONDOWN and e.button == 1:
+            elif e.type == pg.MOUSEBUTTONDOWN and e.button == 1:
+                """Click Effect Down"""
+                cursor.mouse_down()
                 if collide(e.pos, holes_positions):
                     music.play_sound("hit")
-                    scoreboard.increase_score(SCORE_PER_HIT)
+                    scoreboard.increase_score(SCORE_PER_HIT) if playing else None
                     print("Click: HIT")
                 else:
                     music.play_sound("miss")
-                    scoreboard.increase_misses()
+                    scoreboard.increase_misses() if playing else None
                     print("Click: MISS")
+            elif e.type == pg.MOUSEBUTTONUP and e.button == 1:
+                """Click Effect Up"""
+                cursor.mouse_up()
+            elif e.type == pg.KEYDOWN and e.key == pg.K_r:
+                """Restart"""
+                print("R is pressed")
+                playing = True
+                scoreboard.reset()
 
         # Update
-        running = scoreboard.update()
-
+        if playing:
+            playing = scoreboard.update()
+        else:
+            pass
+        
+        # Draw function
         bg.draw()
         scoreboard.draw()
+        cursor.draw()   
+        
         pg.display.flip()
         clock.tick(60)
 

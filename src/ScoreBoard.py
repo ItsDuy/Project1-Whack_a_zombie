@@ -5,7 +5,7 @@ class ScoreBoard:
     def __init__(self, screen: pg.Surface, font_size: int = 32, 
                  time_limit: int = 15, font_name: str = None):
         self.screen = screen
-        self.score = 0WQha
+        self.score = 0
         self.misses = 0
         self.time_limit = time_limit
         self.time_remaining = self.time_limit

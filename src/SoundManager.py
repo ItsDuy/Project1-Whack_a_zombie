@@ -11,8 +11,8 @@ class SoundManager:
             "miss": None
         }
         self.music_volume = 0.5
-        self.sfx_hit_volume = 0.7
-        self.sfx_miss_volume = 0.5
+        self.sfx_hit_volume = 0.3
+        self.sfx_miss_volume = 0.3
         self._load_sounds()
     
     def _load_sounds(self):

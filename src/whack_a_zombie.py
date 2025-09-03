@@ -4,10 +4,11 @@ from pathlib import Path
 try:
     from .background import Background
     from .SoundManager import SoundManager
+    from .ScoreBoard import ScoreBoard
 except ImportError:
     from background import Background
     from SoundManager import SoundManager
-
+    from ScoreBoard import ScoreBoard
 import sys
 import random
 from typing import List
@@ -21,6 +22,10 @@ HOLE_SIZE = 128
 SCREEN = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 SPAWN_POS = None
 pg.display.set_caption("Whack a Zombies")
+
+#GAME CONSANTS
+GAME_TIME=60
+SCORE_PER_HIT=1
 
 def gen_pos(cols, rows) -> List[List]:
     w, h = SCREEN.get_size()       
@@ -76,22 +81,33 @@ def main():
     # Play background music
     music.play_background_music()
 
+    # Scoreboard
+    scoreboard = ScoreBoard(SCREEN, time_limit=GAME_TIME)
+
     # Flags
     running = True
-    
+
     while running:
         for e in pg.event.get():
             if e.type == pg.QUIT:
                 running = False
+                pg.quit()
+                sys.exit(0)
             if e.type == pg.MOUSEBUTTONDOWN and e.button == 1:
                 if collide(e.pos, holes_positions):
                     music.play_sound("hit")
+                    scoreboard.increase_score(SCORE_PER_HIT)
                     print("Click: HIT")
                 else:
                     music.play_sound("miss")
+                    scoreboard.increase_misses()
                     print("Click: MISS")
 
+        # Update
+        running = scoreboard.update()
+
         bg.draw()
+        scoreboard.draw()
         pg.display.flip()
         clock.tick(60)
 

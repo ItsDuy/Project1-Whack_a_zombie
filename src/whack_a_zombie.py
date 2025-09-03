@@ -110,11 +110,11 @@ def main():
                 cursor.mouse_down()
                 if collide(e.pos, holes_positions):
                     music.play_sound("hit")
-                    scoreboard.increase_score(SCORE_PER_HIT)
+                    scoreboard.increase_score(SCORE_PER_HIT) if playing else None
                     print("Click: HIT")
                 else:
                     music.play_sound("miss")
-                    scoreboard.increase_misses()
+                    scoreboard.increase_misses() if playing else None
                     print("Click: MISS")
             elif e.type == pg.MOUSEBUTTONUP and e.button == 1:
                 """Click Effect Up"""
@@ -128,10 +128,14 @@ def main():
         # Update
         if playing:
             playing = scoreboard.update()
+        else:
+            pass
         
+        # Draw function
         bg.draw()
         scoreboard.draw()
         cursor.draw()   
+        
         pg.display.flip()
         clock.tick(60)
 

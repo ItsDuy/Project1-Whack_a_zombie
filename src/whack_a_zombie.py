@@ -18,7 +18,6 @@ import random
 from typing import List, Tuple
 from typing import List, Tuple
 import math
-from .zombies import ZombieManager, IDLE
 
 # Initialize
 pg.init()
@@ -103,11 +102,6 @@ def main():
     cursor = Cursor(SCREEN)
 
     # Zombies
-    """ 
-    idle_cycle: reset time for animation
-    stay_timer: appearance time 
-    respawn_delay: delay time to respawn at another positiom
-    """
     zombie = Zombies(SCREEN, ZOMBIE_SIZE, idle_fps=10, death_fps=12)
     current_pos = random.choice(holes_center)
     zombie.play_idle()

@@ -6,14 +6,16 @@ try:
     from .SoundManager import SoundManager
     from .ScoreBoard import ScoreBoard
     from .cursor import Cursor
+    from .zombies import Zombies
 except ImportError:
     from background import Background
     from SoundManager import SoundManager
     from ScoreBoard import ScoreBoard
     from cursor import Cursor
+    from .zombies import Zombies
 import sys
 import random
-from typing import List
+from typing import List, Tuple
 import math
 
 # Initialize
@@ -22,14 +24,17 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 1024, 768
 TILE_SIZE = 64
 HOLE_SIZE = 128
 SCREEN = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-SPAWN_POS = None
+FPS = 60
 pg.display.set_caption("Whack a Zombies")
 
-#GAME CONSANTS
+# GAME CONSANTS
 GAME_TIME = 20
 SCORE_PER_HIT = 1
+ZOMBIE_SIZE = 64
 
+""" Helper Functions """
 def gen_pos(cols, rows) -> List[List]:
+    """ Generate positions for Holes """
     w, h = SCREEN.get_size()       
     padding_col = (w - HOLE_SIZE * cols) / (cols + 1)
     padding_row = (h - HOLE_SIZE * rows) / (rows + 1)
@@ -42,20 +47,23 @@ def gen_pos(cols, rows) -> List[List]:
             grid[r][c] = (int(x), int(y))
     return grid
 
-def collide(mouse_pos, spawn_pos: List) -> bool:
+def collide(mouse_pos, spawn_pos: Tuple[float, float]) -> bool:
+    """ Check if zombie is clicked or not """
     radius = TILE_SIZE
     x_mouse, y_mouse = mouse_pos
-    for x_spawn, y_spawn in spawn_pos:
-            x_center = x_spawn + HOLE_SIZE / 2
-            y_center = y_spawn + HOLE_SIZE / 2
-
-            distance = math.sqrt(
-                math.pow(x_mouse - x_center, 2) + \
-                math.pow(y_mouse - y_center, 2)
-            )
-            if distance <= radius:
-                return True
+    x_center, y_center = spawn_pos
+    distance = math.sqrt(
+        math.pow(x_mouse - x_center, 2) + \
+        math.pow(y_mouse - y_center, 2)
+    )
+    if distance <= radius:
+        return True
     return False
+
+def center_pos(pos: Tuple[float, float]) -> Tuple[float, float]:
+    """ Centering the position """
+    x, y = pos
+    return (x + HOLE_SIZE / 2, y + HOLE_SIZE / 2)
 
 def main():
     # Initialize
@@ -77,6 +85,7 @@ def main():
             raise ValueError(f"Unexpected: {num_spawns}")
 
     holes_positions = [pos for row in holes_grid for pos in row]
+    holes_center = [center_pos(pos) for pos in holes_positions]     # Standardize the positions of holds
 
     # Background
     bg = Background(SCREEN, TILE_SIZE, holes_positions)
@@ -91,15 +100,28 @@ def main():
     scoreboard = ScoreBoard(SCREEN, time_limit = GAME_TIME)
 
     # Cursor
-    cursor = Cursor(SCREEN)
     pg.mouse.set_visible(False)
+    cursor = Cursor(SCREEN)
+
+    # Zombies
+    """ 
+    idle_cycle: reset time for animation
+    stay_timer: appearance time 
+    respawn_delay: delay time to respawn at another positiom
+    """
+    zombie = Zombies(SCREEN, ZOMBIE_SIZE, idle_fps=10, death_fps=12)
+    current_pos = random.choice(holes_center)
+    zombie.play_idle()
 
     # Flags
     running = True  
     playing = True    
 
     while running:
+        dt = clock.get_time() / 1000
+
         for e in pg.event.get():
+            """ Events for game play """
             if e.type == pg.QUIT:
                 """Quit"""
                 running = False
@@ -108,36 +130,56 @@ def main():
             elif e.type == pg.MOUSEBUTTONDOWN and e.button == 1:
                 """Click Effect Down"""
                 cursor.mouse_down()
-                if collide(e.pos, holes_positions):
+                if collide(e.pos, current_pos):
                     music.play_sound("hit")
-                    scoreboard.increase_score(SCORE_PER_HIT) if playing else None
-                    print("Click: HIT")
+                    if playing and zombie.state != "death":
+                        zombie.play_death()
+                    if playing:
+                        scoreboard.increase_score(SCORE_PER_HIT)
+                        print("Click: HIT")
                 else:
                     music.play_sound("miss")
-                    scoreboard.increase_misses() if playing else None
-                    print("Click: MISS")
-            elif e.type == pg.MOUSEBUTTONUP and e.button == 1:
-                """Click Effect Up"""
-                cursor.mouse_up()
             elif e.type == pg.KEYDOWN and e.key == pg.K_r:
                 """Restart"""
                 print("R is pressed")
                 playing = True
                 scoreboard.reset()
+                current_pos = random.choice(holes_center)
+                zombie.play_idle()
+                zombie.reset()
 
         # Update
         if playing:
             playing = scoreboard.update()
-        else:
-            pass
-        
+
+        # Random Zombie
+        zombie.update(dt)
+        if zombie.state == "idle" and zombie.respawn_timer <= 0:
+            zombie.stay_timer -= dt
+            if zombie.stay_timer <= 0 and playing:
+                scoreboard.increase_misses() if playing else None
+                print("Click: MISS")
+                current_pos = random.choice(holes_center)
+                zombie.play_idle()
+                zombie.reset()
+        if zombie.is_finished and zombie.linger <= 0:
+            zombie.respawn_timer += dt
+            if zombie.respawn_timer >= zombie.respawn_delay:
+                current_pos = random.choice(holes_center)
+                zombie.play_idle()
+                zombie.reset()
+
         # Draw function
         bg.draw()
         scoreboard.draw()
-        cursor.draw()   
-        
+        if playing:
+            zombie.draw(current_pos)
+            if zombie.state == 'idle' and zombie.respawn_timer <= 0:
+                zombie.bar_draw(current_pos)
+        cursor.draw(dt)   
+
         pg.display.flip()
-        clock.tick(60)
+        clock.tick(FPS)  
 
     if not running: 
         pg.quit()

@@ -1,4 +1,4 @@
-# whack_a_zombie.py
+# src/whack_a_zombie.py
 import pygame as pg
 from pathlib import Path
 try:
@@ -16,7 +16,9 @@ except ImportError:
 import sys
 import random
 from typing import List, Tuple
+from typing import List, Tuple
 import math
+from .zombies import ZombieManager, IDLE
 
 # Initialize
 pg.init()
@@ -68,19 +70,18 @@ def center_pos(pos: Tuple[float, float]) -> Tuple[float, float]:
 def main():
     # Initialize
     clock = pg.time.Clock()
-    """
-    3 levels of hole: 6 -> 9 -> 12
-    """
+
+    # Hole layout (3 levels: 6 -> 9 -> 12)
     num_spawns = random.choice([6, 9, 12])
     match num_spawns:
         case (6 | 9) as n:
             cols = 3
             rows = n // 3
-            holes_grid = gen_pos(cols, rows)  
+            holes_grid = gen_pos(cols, rows)
         case 12 as n:
             cols = 4
             rows = n // 4
-            holes_grid = gen_pos(cols, rows)  
+            holes_grid = gen_pos(cols, rows)
         case _:
             raise ValueError(f"Unexpected: {num_spawns}")
 
@@ -90,14 +91,12 @@ def main():
     # Background
     bg = Background(SCREEN, TILE_SIZE, holes_positions)
 
-    # Play Music
+    # Audio
     music = SoundManager()
-
-    # Play Background Music
     music.play_background_music()
 
     # Scoreboard
-    scoreboard = ScoreBoard(SCREEN, time_limit = GAME_TIME)
+    scoreboard = ScoreBoard(SCREEN, time_limit=GAME_TIME)
 
     # Cursor
     pg.mouse.set_visible(False)
@@ -114,8 +113,8 @@ def main():
     zombie.play_idle()
 
     # Flags
-    running = True  
-    playing = True    
+    running = True
+    playing = True
 
     while running:
         dt = clock.get_time() / 1000
@@ -123,12 +122,11 @@ def main():
         for e in pg.event.get():
             """ Events for game play """
             if e.type == pg.QUIT:
-                """Quit"""
                 running = False
                 pg.quit()
                 sys.exit(0)
+
             elif e.type == pg.MOUSEBUTTONDOWN and e.button == 1:
-                """Click Effect Down"""
                 cursor.mouse_down()
                 if collide(e.pos, current_pos):
                     music.play_sound("hit")
@@ -138,17 +136,17 @@ def main():
                         scoreboard.increase_score(SCORE_PER_HIT)
                         print("Click: HIT")
                 else:
+                    # Fallback sound/UX if they clicked empty space:
                     music.play_sound("miss")
             elif e.type == pg.KEYDOWN and e.key == pg.K_r:
-                """Restart"""
-                print("R is pressed")
+                # Restart
                 playing = True
                 scoreboard.reset()
                 current_pos = random.choice(holes_center)
                 zombie.play_idle()
                 zombie.reset()
 
-        # Update
+        # Update game timer
         if playing:
             playing = scoreboard.update()
 
@@ -181,9 +179,9 @@ def main():
         pg.display.flip()
         clock.tick(FPS)  
 
-    if not running: 
-        pg.quit()
-        sys.exit(0)
+    # Quit
+    pg.quit()
+    sys.exit(0)
 
 
 if __name__ == "__main__":

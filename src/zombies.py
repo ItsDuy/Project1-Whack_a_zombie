@@ -1,3 +1,4 @@
+# src/zombies.py
 from pathlib import Path
 from typing import List, Tuple, Optional
 import pygame as pg

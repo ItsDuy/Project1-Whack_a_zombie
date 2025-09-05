@@ -1,0 +1,17 @@
+services:
+  test:
+    build: .
+    image: waz:latest
+    volumes:
+      - .:/app
+    command: ["pytest", "-q"]
+
+  smoke:
+    build: .
+    image: waz:latest
+    environment:
+      SDL_VIDEODRIVER: "dummy"
+      SDL_AUDIODRIVER: "dummy"
+    volumes:
+      - .:/app
+    command: ["python", "-m", "src.tools.smoke_headless"]

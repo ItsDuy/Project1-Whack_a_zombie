@@ -123,10 +123,10 @@ def main():
             elif e.type == pg.MOUSEBUTTONDOWN and e.button == 1:
                 cursor.mouse_down()
                 if collide(e.pos, current_pos):
-                    music.play_sound("hit")
-                    if playing and zombie.state != "death":
+                    if playing and zombie.state != "death" and not zombie.hit:
+                        music.play_sound("hit")
                         zombie.play_death()
-                    if playing:
+                        zombie.hit = True
                         scoreboard.increase_score(SCORE_PER_HIT)
                         print("Click: HIT")
                 else:

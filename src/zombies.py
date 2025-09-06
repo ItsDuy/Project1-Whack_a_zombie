@@ -23,6 +23,7 @@ class Zombies:
         self.loop: bool = True
         self.finished: bool = False
         self.linger: float = 0.0
+        self.hit: bool = False
 
         # Visuals
         self.image: Optional[pg.Surface] = None
@@ -62,7 +63,8 @@ class Zombies:
         self.idle_cycle = (len(self.idle_frames) / self.idle_fps) if self.idle_fps > 0 else 0.6
         self.stay_timer = 2.0 * self.idle_cycle                  
         self.respawn_timer = 0.0 
-
+        self.hit = False
+        
     # --- Controls ---
     def play_idle(self):
         """ Setting for Idle state """

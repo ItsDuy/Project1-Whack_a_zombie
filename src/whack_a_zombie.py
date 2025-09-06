@@ -145,11 +145,11 @@ def main():
             playing = scoreboard.update()
 
         # Random Zombie
-        zombie.update(dt)
+        zombie.update(dt)   # Update next Frame
         if zombie.state == "idle" and zombie.respawn_timer <= 0:
             zombie.stay_timer -= dt
             if zombie.stay_timer <= 0 and playing:
-                scoreboard.increase_misses() if playing else None
+                scoreboard.increase_misses() 
                 print("Click: MISS")
                 current_pos = random.choice(holes_center)
                 zombie.play_idle()

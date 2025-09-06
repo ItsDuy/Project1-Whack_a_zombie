@@ -41,7 +41,7 @@ class Zombies:
         self.rect = self.image.get_rect(topleft=(0, 0))
 
         # Property
-        self.idle_cycle = (len(self.idle_frames) / self.idle_fps) if self.idle_fps > 0 else 0.6
+        self.idle_cycle = (len(self.idle_frames) / self.idle_fps) if self.idle_fps > 0 else 0.6   
         self.stay_timer = 2.0 * self.idle_cycle       
         self.respawn_delay = 0.1           
         self.respawn_timer = 0.0

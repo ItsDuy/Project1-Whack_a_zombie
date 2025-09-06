@@ -49,7 +49,7 @@ def gen_pos(cols, rows) -> List[List]:
     return grid
 
 def collide(mouse_pos, spawn_pos: Tuple[float, float]) -> bool:
-    """ Check if zombie is clicked or not """
+    """ Check if Zombie is clicked or not """
     radius = TILE_SIZE
     x_mouse, y_mouse = mouse_pos
     x_center, y_center = spawn_pos
@@ -62,7 +62,7 @@ def collide(mouse_pos, spawn_pos: Tuple[float, float]) -> bool:
     return False
 
 def center_pos(pos: Tuple[float, float]) -> Tuple[float, float]:
-    """ Centering the position """
+    """ Centering the Position """
     x, y = pos
     return (x + HOLE_SIZE / 2, y + HOLE_SIZE / 2)
 

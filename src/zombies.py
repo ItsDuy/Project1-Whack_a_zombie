@@ -49,7 +49,7 @@ class Zombies:
 
     def load_frames(self, folder: Path) -> List[pg.Surface]:
         """ Loaders """
-        paths = sorted(folder.glob("*.png"), key=numeric_key)
+        paths = sorted(folder.glob("*.png"), key = numeric_key)
         frames: List[pg.Surface] = []
         for p in paths:
             img = pg.image.load(str(p)).convert_alpha()

@@ -1,6 +1,6 @@
-# Whack‑a‑Zombie
+# Whack-a-Zombie (Pygame)
 
-A simple **Whack‑a‑Mole–style** game built with Pygame. Left‑click to whack zombies and score as many points as you can before time runs out.
+A simple **Whack-a-Mole–style** game built with Pygame. Left-click to whack zombies and score as many points as you can before time runs out.
 
 ---
 
@@ -21,7 +21,7 @@ source .venv/bin/activate
 
 **Windows (PowerShell)**
 ```powershell
-python -m venv .venv
+py -3 -m venv .venv
 .venv\Scripts\Activate.ps1
 ```
 
@@ -43,9 +43,6 @@ python3 run.py
 ```
 project/
 ├─ run.py
-├─ requirements.txt
-├─ docker-compose.yml       # (if using Docker)
-├─ Dockerfile               # (if using Docker)
 ├─ requirements.txt
 ├─ src/
 │  ├─ whack_a_zombie.py      # Game loop, input/events, collision, zombie respawn
@@ -81,7 +78,7 @@ if __name__ == "__main__":
 
 ## Controls
 - **Left Mouse**: Whack a zombie
-- **R**: Restart (in‑game or from the Game Over screen)
+- **R**: Restart (in-game or from the Game Over screen)
 - **M**: Menu (shown on the final screen; currently a placeholder)
 
 ---
@@ -95,17 +92,9 @@ if __name__ == "__main__":
 
 Make sure these paths exist to avoid load errors.
 
-
 ---
 
-## Credits / Attributions
-This project uses third‑party assets. Full attributions and licenses are listed in **[CREDITS.md](./CREDITS.md)**.  
-When required by the asset’s license, the original license files are included inside the corresponding `assets/*` folders.
 
-Short summary (replace placeholders with actual info):
-- **Font:** “Minecraft.ttf” by <Author/Studio>, licensed under <License>. Source: <URL>. Changes: <e.g., subset/rename>.
-- **Tiles/Background:** "<Pack Name>" by **TheLazyStone**, <License>. Source: <https://thelazystone.itch.io/post-apocalypse-pixel-art-asset-pack>. Changes: <...>.
-- **Audio (BGM/SFX):** “BackGroundMusic.wav”, “Hit.wav”, “Miss.wav” by <Author/Studio>, <License>. Source: <URL>. Changes: <e.g., normalized>.
 
 ---
 
@@ -117,6 +106,4 @@ Short summary (replace placeholders with actual info):
 ---
 
 ## License
-For learning/non‑commercial use (adjust as you like).
-
-Have fun! 🎯
+For learning/non-commercial use (adjust as you like).

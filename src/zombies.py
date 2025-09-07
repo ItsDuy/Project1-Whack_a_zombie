@@ -54,7 +54,7 @@ class Zombies:
         for p in paths:
             img = pg.image.load(str(p)).convert_alpha()
             if img.get_size() != self.size:
-                img = pg.transform.smoothscale(img, self.size)
+                img = pg.transform.scale(img, self.size)
             frames.append(img)
         return frames
 

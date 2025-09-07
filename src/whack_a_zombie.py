@@ -7,12 +7,14 @@ try:
     from .ScoreBoard import ScoreBoard
     from .cursor import Cursor
     from .zombies import Zombies
+    from .ReplayBoard import ReplayBoard
 except ImportError:
     from background import Background
     from SoundManager import SoundManager
     from ScoreBoard import ScoreBoard
     from cursor import Cursor
-    from .zombies import Zombies
+    from zombies import Zombies
+    from ReplayBoard import ReplayBoard
 import sys
 import random
 from typing import List, Tuple
@@ -106,9 +108,13 @@ def main():
     current_pos = random.choice(holes_center)
     zombie.play_idle()
 
+    # Initialize ReplayBoard
+    replay_board = ReplayBoard(SCREEN)
+    
     # Flags
     running = True
     playing = True
+    show_replay_board = False
 
     while running:
         dt = clock.get_time() / 1000
@@ -120,29 +126,53 @@ def main():
                 pg.quit()
                 sys.exit(0)
 
-            elif e.type == pg.MOUSEBUTTONDOWN and e.button == 1:
-                cursor.mouse_down()
-                if collide(e.pos, current_pos):
-                    if playing and zombie.state != "death" and not zombie.hit:
-                        music.play_sound("hit")
-                        zombie.play_death()
-                        zombie.hit = True
-                        scoreboard.increase_score(SCORE_PER_HIT)
-                        print("Click: HIT")
-                else:
-                    # Fallback sound/UX if they clicked empty space:
-                    music.play_sound("miss")
-            elif e.type == pg.KEYDOWN and e.key == pg.K_r:
-                # Restart
-                playing = True
-                scoreboard.reset()
-                current_pos = random.choice(holes_center)
-                zombie.play_idle()
-                zombie.reset()
+            # Handle replay board events when it's shown
+            if show_replay_board:
+                action = replay_board.handle_events(e)
+                if action == "replay":
+                    # Restart the game
+                    playing = True
+                    show_replay_board = False
+                    scoreboard.reset()
+                    current_pos = random.choice(holes_center)
+                    zombie.play_idle()
+                    zombie.reset()
+                elif action == "menu":
+                    # Exit to menu (not implemented - just restart for now)
+                    playing = True
+                    show_replay_board = False
+                    scoreboard.reset()
+                    current_pos = random.choice(holes_center)
+                    zombie.play_idle()
+                    zombie.reset()
+            else:
+                # Normal gameplay events
+                if e.type == pg.MOUSEBUTTONDOWN and e.button == 1:
+                    cursor.mouse_down()
+                    if collide(e.pos, current_pos):
+                        if playing and zombie.state != "death" and not zombie.hit:
+                            music.play_sound("hit")
+                            zombie.play_death()
+                            zombie.hit = True
+                            scoreboard.increase_score(SCORE_PER_HIT)
+                            print("Click: HIT")
+                    else:
+                        # Fallback sound/UX if they clicked empty space:
+                        music.play_sound("miss")
+                elif e.type == pg.KEYDOWN and e.key == pg.K_r and not show_replay_board:
+                    # Restart during gameplay
+                    playing = True
+                    scoreboard.reset()
+                    current_pos = random.choice(holes_center)
+                    zombie.play_idle()
+                    zombie.reset()
 
         # Update game timer
         if playing:
             playing = scoreboard.update()
+            # Show replay board when game ends
+            if not playing:
+                show_replay_board = True
 
         # Random Zombie
         zombie.update(dt)   # Update next Frame
@@ -168,6 +198,12 @@ def main():
             zombie.draw(current_pos)
             if zombie.state == 'idle' and zombie.respawn_timer <= 0:
                 zombie.bar_draw(current_pos)
+        
+        # Draw replay board if game is over
+        if show_replay_board:
+            replay_board.draw(scoreboard.score, scoreboard.hits, scoreboard.misses)
+            
+        # Always draw cursor last so it's on top
         cursor.draw(dt)   
 
         pg.display.flip()

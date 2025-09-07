@@ -7,6 +7,7 @@ class ScoreBoard:
                  time_limit: int = 15, font_name: str = None):
         self.screen = screen
         self.score = 0
+        self.hits = 0
         self.misses = 0
         self.time_limit = time_limit
         self.time_remaining = self.time_limit
@@ -43,6 +44,7 @@ class ScoreBoard:
     def increase_score(self, points: int = 1):
         """Increase player's score"""
         self.score += points
+        self.hits += 1
     
     def increase_misses(self):
         """Increment miss counter"""
@@ -66,6 +68,7 @@ class ScoreBoard:
     def reset(self):
         """Reset scoreboard"""
         self.score = 0
+        self.hits = 0
         self.misses = 0
         self.time_remaining = self.time_limit
         self.start_time = pg.time.get_ticks()

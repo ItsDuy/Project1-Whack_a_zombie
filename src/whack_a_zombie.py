@@ -127,25 +127,7 @@ def main():
                 sys.exit(0)
 
             # Handle replay board events when it's shown
-            if show_replay_board:
-                action = replay_board.handle_events(e)
-                if action == "replay":
-                    # Restart the game
-                    playing = True
-                    show_replay_board = False
-                    scoreboard.reset()
-                    current_pos = random.choice(holes_center)
-                    zombie.play_idle()
-                    zombie.reset()
-                elif action == "menu":
-                    # Exit to menu (not implemented - just restart for now)
-                    playing = True
-                    show_replay_board = False
-                    scoreboard.reset()
-                    current_pos = random.choice(holes_center)
-                    zombie.play_idle()
-                    zombie.reset()
-            else:
+            if not show_replay_board:
                 # Normal gameplay events
                 if e.type == pg.MOUSEBUTTONDOWN and e.button == 1:
                     cursor.mouse_down()
@@ -166,6 +148,27 @@ def main():
                     current_pos = random.choice(holes_center)
                     zombie.play_idle()
                     zombie.reset()
+            else:
+                action = replay_board.handle_events(e)
+                if action == "replay":
+                    # Restart the game
+                    playing = True
+                    show_replay_board = False
+                    scoreboard.reset()
+                    current_pos = random.choice(holes_center)
+                    zombie.play_idle()
+                    zombie.reset()
+                elif action == "menu":
+                    # Exit to menu (not implemented - just restart for now)
+                    """
+                    playing = True
+                    show_replay_board = False
+                    scoreboard.reset()
+                    current_pos = random.choice(holes_center)
+                    zombie.play_idle()
+                    zombie.reset()
+                    """
+                    pass
 
         # Update game timer
         if playing:

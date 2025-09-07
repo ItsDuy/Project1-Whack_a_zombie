@@ -104,7 +104,10 @@ When required by the asset’s license, the original license files are included 
 
 Short summary (replace placeholders with actual info):
 - **Font:** “Minecraft.ttf” by <Author/Studio>, licensed under <License>. Source: <URL>. Changes: <e.g., subset/rename>.
-- **Tiles/Background:** "<Pack Name>" by **TheLazyStone**, <CC0 1.0 — https://creativecommons.org/publicdomain/zero/1.0/>. Source: <https://thelazystone.itch.io/post-apocalypse-pixel-art-asset-pack>. 
+- **Tiles/Background:** "Post-apocalypse Pixel Art Asset Pack (16×16 Tileset)" by [TheLazyStone](https://thelazystone.itch.io/)
+  License: CC0 1.0 — https://creativecommons.org/publicdomain/zero/1.0/
+  Source: https://thelazystone.itch.io/post-apocalypse-pixel-art-asset-pack
+  Changes: resized 16×16→64×64
 - **Audio (BGM/SFX):** “BackGroundMusic.wav”, “Hit.wav”, “Miss.wav” by <Author/Studio>, <License>. Source: <URL>. Changes: <e.g., normalized>.
 
 ---

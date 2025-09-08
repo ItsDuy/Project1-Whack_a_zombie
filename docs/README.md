@@ -38,7 +38,7 @@ python3 run.py
 
 ---
 
-## Project Structure (suggested)
+## Project Structure
 
 ```
 project/

@@ -108,7 +108,7 @@ Short summary (replace placeholders with actual info):
   License: CC0 1.0 — https://creativecommons.org/publicdomain/zero/1.0/
   Source: https://thelazystone.itch.io/post-apocalypse-pixel-art-asset-pack
   Changes: resized 16×16→64×64
-- **Audio (BGM/SFX):** “BackGroundMusic.wav”, “Hit.wav”, “Miss.wav” by <Author/Studio>, <License>. Source: <URL>. Changes: <e.g., normalized>.
+- **Audio (BGM/SFX):** “BackGroundMusic.wav”, “Hit.wav”, “Miss.wav” by DCAudio, <License>. Source: <URL>(https://terrorbytegames.itch.io/zombie-massacre-sound-effects-starter-pack). Changes: <e.g., normalized>.
 
 ---
 

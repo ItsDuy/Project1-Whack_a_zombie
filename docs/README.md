@@ -102,13 +102,13 @@ Make sure these paths exist to avoid load errors.
 This project uses third‑party assets. Full attributions and licenses are listed in **[CREDITS.md](./CREDITS.md)**.  
 When required by the asset’s license, the original license files are included inside the corresponding `assets/*` folders.
 
-Short summary (replace placeholders with actual info):
-- **Font:** “Minecraft.ttf” by <Author/Studio>, licensed under <License>. Source: <URL>. Changes: <e.g., subset/rename>.
+Short summary: 
+- **Font:** “Minecraft.ttf” 
 - **Tiles/Background:** "Post-apocalypse Pixel Art Asset Pack (16×16 Tileset)" by [TheLazyStone](https://thelazystone.itch.io/)
   License: CC0 1.0 — https://creativecommons.org/publicdomain/zero/1.0/
   Source: https://thelazystone.itch.io/post-apocalypse-pixel-art-asset-pack
   Changes: resized 16×16→64×64
-- **Audio (BGM/SFX):** “BackGroundMusic.wav”, “Hit.wav”, “Miss.wav” by DCAudio, <License>. Source: <URL>(https://terrorbytegames.itch.io/zombie-massacre-sound-effects-starter-pack). Changes: <e.g., normalized>.
+- **Audio (BGM/SFX):** “BackGroundMusic.wav”, “Hit.wav”, “Miss.wav” by DCAudio. Source: https://terrorbytegames.itch.io/zombie-massacre-sound-effects-starter-pack. 
 
 ---
 
@@ -120,6 +120,6 @@ Short summary (replace placeholders with actual info):
 ---
 
 ## License
-For learning/non‑commercial use (adjust as you like).
+For learning/non‑commercial use.
 
 Have fun! 🎯

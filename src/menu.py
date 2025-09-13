@@ -98,14 +98,14 @@ class Menu:
         self.screen.blit(self.arrow_l, self.l_rect)
 
         # Draw difficulty
-        diff_text = self.font.render("6 holes", False, self.lv_color)
+        diff_text = self.font.render("Easy", False, self.lv_color)
         match curr_diff:
             case 0:
-                diff_text = self.font.render("6 holes", False, self.lv_color)
+                diff_text = self.font.render("Easy", False, self.lv_color)
             case 1:
-                diff_text = self.font.render("9 holes", False, self.lv_color)
+                diff_text = self.font.render("Medium", False, self.lv_color)
             case 2:
-                diff_text = self.font.render("12 holes", False, self.lv_color)
+                diff_text = self.font.render("PPL", False, self.lv_color)
         diff_rect = diff_text.get_rect()
         diff_rect.center = (self.width / 2, self.height / 3 * 2)
         self.screen.blit(diff_text, diff_rect)

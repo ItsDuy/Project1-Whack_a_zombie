@@ -6,10 +6,9 @@ from typing import List
 # Images for the Background
 ASSETS = Path(__file__).resolve().parent.parent / "assets" / "images" / "background"
 class Background:
-    def __init__(self, screen: pg.Surface, tile_size: int, hole_positions: List, seed: int = 1337):
+    def __init__(self, screen: pg.Surface, tile_size: int, seed: int = 1337):
         self.screen = screen
         self.tile_size = tile_size
-        self.holes_positions = hole_positions   # (1,2) (2,3), (3, 4)
         self.rng = random.Random(seed)
 
         # preload
@@ -44,7 +43,7 @@ class Background:
         tile_map[rows - 1][cols - 1] = 9
         return tile_map
 
-    def draw(self):
+    def draw(self, hole_positions: List):
         w, h = self.screen.get_size()
         cols = round(w / self.tile_size)
         rows = round(h / self.tile_size)
@@ -66,6 +65,6 @@ class Background:
                     self.screen.blit(self.grass2, (c * self.tile_size, r * self.tile_size))
         
         # punch holes
-        for x, y in self.holes_positions:  
+        for x, y in hole_positions:
             self.screen.blit(self.hole, (int(x), int(y)))
                                                                                                                                   

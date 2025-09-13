@@ -1,4 +1,5 @@
 # src/whack_a_zombie.py
+import pygame
 import pygame as pg
 from pathlib import Path
 try:
@@ -8,6 +9,7 @@ try:
     from .cursor import Cursor
     from .zombies import Zombies
     from .ReplayBoard import ReplayBoard
+    from .menu import Menu
 except ImportError:
     from background import Background
     from SoundManager import SoundManager
@@ -15,9 +17,9 @@ except ImportError:
     from cursor import Cursor
     from zombies import Zombies
     from ReplayBoard import ReplayBoard
+    from menu import Menu
 import sys
 import random
-from typing import List, Tuple
 from typing import List, Tuple
 import math
 
@@ -30,7 +32,7 @@ SCREEN = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 FPS = 60
 pg.display.set_caption("Whack a Zombies")
 
-# GAME CONSANTS
+# GAME CONSTANTS
 GAME_TIME = 20
 SCORE_PER_HIT = 1
 ZOMBIE_SIZE = 64
@@ -73,8 +75,12 @@ def main():
     clock = pg.time.Clock()
 
     # Hole layout (3 levels: 6 -> 9 -> 12)
-    num_spawns = random.choice([6, 9, 12])
-    match num_spawns:
+    num_spawns = [6, 9, 12]
+
+    # Difficulty of the game
+    difficulty = 0
+
+    match num_spawns[difficulty]:
         case (6 | 9) as n:
             cols = 3
             rows = n // 3
@@ -90,7 +96,10 @@ def main():
     holes_center = [center_pos(pos) for pos in holes_positions]     # Standardize the positions of holds
 
     # Background
-    bg = Background(SCREEN, TILE_SIZE, holes_positions)
+    bg = Background(SCREEN, TILE_SIZE)
+
+    # Menu
+    menu = Menu(SCREEN)
 
     # Audio
     music = SoundManager()
@@ -105,19 +114,36 @@ def main():
 
     # Zombies
     zombie = Zombies(SCREEN, ZOMBIE_SIZE, idle_fps=10, death_fps=12)
-    current_pos = random.choice(holes_center)
-    zombie.play_idle()
 
     # Initialize ReplayBoard
     replay_board = ReplayBoard(SCREEN)
     
     # Flags
     running = True
-    playing = True
+    playing = False
+    show_menu = True
     show_replay_board = False
+
+    # Difficulty of the game
+    difficulty = 0
 
     while running:
         dt = clock.get_time() / 1000
+
+        match num_spawns[difficulty]:
+            case (6 | 9) as n:
+                cols = 3
+                rows = n // 3
+                holes_grid = gen_pos(cols, rows)
+            case 12 as n:
+                cols = 4
+                rows = n // 4
+                holes_grid = gen_pos(cols, rows)
+            case _:
+                raise ValueError(f"Unexpected: {num_spawns}")
+
+        holes_positions = [pos for row in holes_grid for pos in row]
+        holes_center = [center_pos(pos) for pos in holes_positions]  # Standardize the positions of holds
 
         for e in pg.event.get():
             """ Events for game play """
@@ -127,7 +153,48 @@ def main():
                 sys.exit(0)
 
             # Handle replay board events when it's shown
-            if not show_replay_board:
+            if show_menu:
+                action = menu.handle_events(e)
+                if action == "play":
+                    playing = True
+                    show_menu = False
+                    show_replay_board = False
+                    scoreboard.reset()
+                    current_pos = random.choice(holes_center)
+                    zombie.play_idle()
+                    zombie.reset()
+                elif action == "right":
+                    match difficulty:
+                        case 0: difficulty = 1
+                        case 1: difficulty = 2
+                        case 2: difficulty = 0
+                elif action == "left":
+                    match difficulty:
+                        case 2: difficulty = 1
+                        case 1: difficulty = 0
+                        case 0: difficulty = 2
+                elif action == "quit":
+                    running = False
+                    pg.quit()
+                    sys.exit(0)
+            elif show_replay_board:
+                action = replay_board.handle_events(e)
+                if action == "replay":
+                    # Restart the game
+                    playing = True
+                    show_menu = False
+                    show_replay_board = False
+                    scoreboard.reset()
+                    current_pos = random.choice(holes_center)
+                    zombie.play_idle()
+                    zombie.reset()
+                elif action == "menu":
+                    playing = False
+                    show_menu = True
+                    show_replay_board = False
+                    scoreboard.reset()
+                    zombie.reset()
+            else:
                 # Normal gameplay events
                 if e.type == pg.MOUSEBUTTONDOWN and e.button == 1:
                     cursor.mouse_down()
@@ -148,27 +215,6 @@ def main():
                     current_pos = random.choice(holes_center)
                     zombie.play_idle()
                     zombie.reset()
-            else:
-                action = replay_board.handle_events(e)
-                if action == "replay":
-                    # Restart the game
-                    playing = True
-                    show_replay_board = False
-                    scoreboard.reset()
-                    current_pos = random.choice(holes_center)
-                    zombie.play_idle()
-                    zombie.reset()
-                elif action == "menu":
-                    # Exit to menu (not implemented - just restart for now)
-                    """
-                    playing = True
-                    show_replay_board = False
-                    scoreboard.reset()
-                    current_pos = random.choice(holes_center)
-                    zombie.play_idle()
-                    zombie.reset()
-                    """
-                    pass
 
         # Update game timer
         if playing:
@@ -195,7 +241,7 @@ def main():
                 zombie.reset()
 
         # Draw function
-        bg.draw()
+        bg.draw(holes_positions)
         scoreboard.draw()
         if playing:
             zombie.draw(current_pos)
@@ -203,11 +249,16 @@ def main():
                 zombie.bar_draw(current_pos)
         
         # Draw replay board if game is over
-        if show_replay_board:
+        if show_menu:
+            menu.draw(difficulty)
+        elif show_replay_board:
             replay_board.draw(scoreboard.score, scoreboard.hits, scoreboard.misses)
             
-        # Always draw cursor last so it's on top
-        cursor.draw(dt)   
+        if show_menu or show_replay_board:
+            pygame.mouse.set_visible(True)
+        else:
+            pygame.mouse.set_visible(False)
+            cursor.draw(dt)
 
         pg.display.flip()
         clock.tick(FPS)  

@@ -1,12 +1,12 @@
 # Whack‑a‑Zombie - Group 7
-'''
+```
 Members:<br>
 Nguyễn Anh Duy<br>
 Phạm Quang Anh Duy<br>
 Nguyễn Quốc Hiệu<br>
 Cao Quế Phương<br>
-'''
-<br>
+```
+
 A simple **Whack‑a‑Mole–style** game built with Pygame. Left‑click to whack zombies and score as many points as you can before time runs out.
 
 ---
